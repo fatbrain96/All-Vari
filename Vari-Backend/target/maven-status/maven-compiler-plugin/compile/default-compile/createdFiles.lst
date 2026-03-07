@@ -1,0 +1,4 @@
+com\vari\backend\VariBackendApplication.class
+com\vari\backend\repository\HealthReportRepository.class
+com\vari\backend\model\HealthReport.class
+com\vari\backend\controller\HealthReportController.class
