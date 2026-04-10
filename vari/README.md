@@ -1,16 +1,33 @@
-# vari
+# Vari Field Connect
 
-A new Flutter project.
+AI-powered water quality monitoring and health surveillance system for rural India.
+
+## Features
+
+- Real-time water quality testing and reporting
+- AI-powered health risk assessment using Gemini AI
+- Interactive geospatial mapping with 3-tier risk visualization
+- Mobile app for ASHA workers
+- Web-based admin dashboard for district officials
+- Secure authentication and data management
+
+## Technology Stack
+
+- **Frontend**: Flutter (Mobile & Web)
+- **Backend**: Spring Boot with PostgreSQL
+- **AI Integration**: Google Gemini AI
+- **Mapping**: Flutter Map with OpenStreetMap
+- **Authentication**: JWT-based secure login
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Clone the repository
+2. Install Flutter dependencies: `flutter pub get`
+3. Configure backend API endpoints
+4. Run the application: `flutter run`
 
-A few resources to get you started if this is your first Flutter project:
+## Project Structure
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- `/lib/screens/` - Application screens
+- `/lib/widgets/` - Reusable UI components
+- Backend API integration for real-time data sync

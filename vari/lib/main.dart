@@ -1,46 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/login_screen.dart';
+import 'screens/admin_login_screen.dart';
 
-void
-main() {
-  runApp(
-    const VariApp(),
-  );
+void main() {
+  runApp(const VariApp());
 }
 
-class VariApp
-    extends
-        StatelessWidget {
-  const VariApp({
-    super.key,
-  });
+class VariApp extends StatelessWidget {
+  const VariApp({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Vari Enterprise',
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(
-          0xFFF8F9FA,
-        ), // Clean Gray-White
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(
-            0xFF00796B,
-          ), // Deep Teal
-          primary: const Color(
-            0xFF00796B,
-          ),
-          secondary: const Color(
-            0xFF26A69A,
-          ),
+          seedColor: const Color(0xFF00796B),
+          primary: const Color(0xFF00796B),
+          secondary: const Color(0xFF26A69A),
           surface: Colors.white,
         ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(), // High-end Font
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -55,7 +40,7 @@ class VariApp
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: kIsWeb ? const AdminLoginScreen() : const LoginScreen(),
     );
   }
 }

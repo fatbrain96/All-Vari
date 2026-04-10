@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart'
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'report_details_screen.dart'; // ✅ Import the details screen
+import '../services/api_config.dart';
 
 class HistoryScreen
     extends
@@ -31,12 +32,6 @@ class _HistoryScreenState
   reports = [];
   bool isLoading = true;
 
-  // Smart URL logic
-  String get backendUrl {
-    if (kIsWeb) return 'http://localhost:8080/api/reports';
-    return 'http://192.168.239.176:8080/api/reports';
-  }
-
   @override
   void initState() {
     super.initState();
@@ -49,9 +44,7 @@ class _HistoryScreenState
   fetchReports() async {
     try {
       final response = await http.get(
-        Uri.parse(
-          backendUrl,
-        ),
+        Uri.parse('${ApiConfig.baseUrl}/reports'),
       );
       if (response.statusCode ==
           200) {
@@ -74,9 +67,7 @@ class _HistoryScreenState
       setState(
         () => isLoading = false,
       );
-      print(
-        "Error fetching history: $e",
-      );
+      ApiConfig.logError('/reports', e);
     }
   }
 

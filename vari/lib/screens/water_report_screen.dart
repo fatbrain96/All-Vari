@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../widgets/custom_text_field.dart';
+import '../services/api_config.dart';
 
 class WaterReportScreen
     extends
@@ -50,12 +51,6 @@ class _WaterReportScreenState
   >
   _victims = [];
 
-  // Smart URL
-  String get backendUrl {
-    if (kIsWeb) return 'http://localhost:8080/api/reports';
-    return 'http://192.168.239.176:8080/api/reports';
-  }
-
   @override
   void initState() {
     super.initState();
@@ -87,9 +82,7 @@ class _WaterReportScreenState
     } catch (
       e
     ) {
-      print(
-        "GPS Error: $e",
-      );
+      ApiConfig.logError('/location', e);
     }
   }
 
@@ -483,9 +476,7 @@ class _WaterReportScreenState
       };
 
       final response = await http.post(
-        Uri.parse(
-          backendUrl,
-        ),
+        Uri.parse('${ApiConfig.baseUrl}/reports'),
         headers: {
           "Content-Type": "application/json",
         },
@@ -523,6 +514,7 @@ class _WaterReportScreenState
     } catch (
       e
     ) {
+      ApiConfig.logError('/reports', e);
       if (mounted) {
         ScaffoldMessenger.of(
           context,

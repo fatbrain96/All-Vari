@@ -1,78 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'water_report_screen.dart';
-import 'history_screen.dart'; // ✅ Import the new history screen
+import 'history_screen.dart';
+import 'profile_screen.dart';
+import 'analytics_screen.dart';
+import 'mobile_map_screen.dart';
 
-class DashboardScreen
-    extends
-        StatelessWidget {
-  const DashboardScreen({
-    super.key,
-  });
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  String workerName = "ASHA Worker";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      workerName = prefs.getString('workerName') ?? "ASHA Worker";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Dashboard",
-        ),
+        title: const Text("Dashboard"),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.notifications_none,
-            ),
+            icon: const Icon(Icons.notifications_none),
             onPressed: () {},
           ),
-          const CircleAvatar(
-            radius: 18,
-            backgroundColor: Color(
-              0xFFE0F2F1,
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen())
             ),
-            child: Icon(
-              Icons.person,
-              size: 20,
-              color: Color(
-                0xFF00796B,
+            child: const CircleAvatar(
+              radius: 18,
+              backgroundColor: Color(0xFFE0F2F1),
+              child: Icon(
+                Icons.person,
+                size: 20,
+                color: Color(0xFF00796B),
               ),
             ),
           ),
-          const SizedBox(
-            width: 15,
-          ),
+          const SizedBox(width: 15),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(
-          20,
-        ),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FadeInLeft(
-              child: const Text(
-                "Overview",
-                style: TextStyle(
+              child: Text(
+                "Welcome, $workerName",
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             // Primary Action Card
             FadeInUp(
               child: GestureDetector(
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (
-                          _,
-                        ) => const WaterReportScreen(),
+                    builder: (_) => const WaterReportScreen(),
                   ),
                 ),
                 child: Container(
@@ -81,36 +88,20 @@ class DashboardScreen
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
-                        Color(
-                          0xFF00796B,
-                        ),
-                        Color(
-                          0xFF4DB6AC,
-                        ),
+                        Color(0xFF00796B),
+                        Color(0xFF4DB6AC),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(
-                      20,
-                    ),
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color:
-                            const Color(
-                              0xFF00796B,
-                            ).withOpacity(
-                              0.3,
-                            ),
+                        color: const Color(0xFF00796B).withValues(alpha: 0.3),
                         blurRadius: 10,
-                        offset: const Offset(
-                          0,
-                          5,
-                        ),
+                        offset: const Offset(0, 5),
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.all(
-                    25,
-                  ),
+                  padding: const EdgeInsets.all(25),
                   child: Row(
                     children: [
                       Column(
@@ -125,9 +116,7 @@ class DashboardScreen
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            height: 8,
-                          ),
+                          SizedBox(height: 8),
                           Text(
                             "Log pH, TDS & Turbidity",
                             style: TextStyle(
@@ -139,31 +128,23 @@ class DashboardScreen
                       ),
                       const Spacer(),
                       Container(
-                        padding: const EdgeInsets.all(
-                          10,
-                        ),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(
-                            0.2,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            15,
-                          ),
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                         child: const Icon(
                           Icons.add_location_alt,
                           color: Colors.white,
                           size: 30,
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             const Text(
               "Quick Actions",
               style: TextStyle(
@@ -171,9 +152,7 @@ class DashboardScreen
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             Row(
               children: [
                 Expanded(
@@ -181,10 +160,7 @@ class DashboardScreen
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:
-                            (
-                              _,
-                            ) => const HistoryScreen(),
+                        builder: (_) => const HistoryScreen(),
                       ),
                     ),
                     child: _buildMiniCard(
@@ -194,39 +170,57 @@ class DashboardScreen
                     ),
                   ),
                 ),
-                const SizedBox(
-                  width: 15,
-                ),
+                const SizedBox(width: 10),
                 Expanded(
-                  child: _buildMiniCard(
-                    Icons.analytics,
-                    "Analytics",
-                    Colors.purple,
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AnalyticsScreen(),
+                      ),
+                    ),
+                    child: _buildMiniCard(
+                      Icons.analytics,
+                      "Analytics",
+                      Colors.purple,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MobileMapScreen(),
+                      ),
+                    ),
+                    child: _buildMiniCard(
+                      Icons.map,
+                      "Live Map",
+                      Colors.blue,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             const Text(
-              "Recent Alerts",
+              "Village Activity",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(
-              height: 15,
+            const SizedBox(height: 15),
+            _buildAlertTile(
+              "Please ensure routine chlorination is logged.",
+              "System Notice",
+              Colors.blue,
             ),
             _buildAlertTile(
-              "High Turbidity detected in Zone 4",
-              "2 mins ago",
-              Colors.red,
-            ),
-            _buildAlertTile(
-              "Sync completed successfully",
-              "1 hour ago",
+              "Last sync completed successfully",
+              "Recent",
               Colors.green,
             ),
           ],
@@ -235,25 +229,15 @@ class DashboardScreen
     );
   }
 
-  Widget _buildMiniCard(
-    IconData icon,
-    String label,
-    Color color,
-  ) {
+  Widget _buildMiniCard(IconData icon, String label, Color color) {
     return Container(
-      padding: const EdgeInsets.all(
-        20,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          20,
-        ),
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(
-              0.05,
-            ),
+            color: Colors.grey.withValues(alpha: 0.05),
             blurRadius: 10,
           ),
         ],
@@ -261,48 +245,31 @@ class DashboardScreen
       child: Column(
         children: [
           CircleAvatar(
-            backgroundColor: color.withOpacity(
-              0.1,
-            ),
-            child: Icon(
-              icon,
-              color: color,
-            ),
+            backgroundColor: color.withValues(alpha: 0.1),
+            child: Icon(icon, color: color),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 8),
           Text(
             label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 12
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAlertTile(
-    String title,
-    String time,
-    Color color,
-  ) {
+  Widget _buildAlertTile(String title, String subtitle, Color color) {
     return Container(
-      margin: const EdgeInsets.only(
-        bottom: 10,
-      ),
-      padding: const EdgeInsets.all(
-        15,
-      ),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          15,
-        ),
-        border: Border.all(
-          color: Colors.grey.shade100,
-        ),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.grey.shade100),
       ),
       child: Row(
         children: [
@@ -311,33 +278,31 @@ class DashboardScreen
             height: 40,
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(
-                2,
-              ),
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(
-            width: 15,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
-              ),
-              Text(
-                time,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          )
         ],
       ),
     );

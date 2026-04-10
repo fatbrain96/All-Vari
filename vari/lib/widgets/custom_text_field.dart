@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField
-    extends
-        StatelessWidget {
+class CustomTextField extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool isPassword;
@@ -19,28 +17,20 @@ class CustomTextField
   });
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(
-          15,
-        ),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: TextField(
         controller: controller,
         obscureText: isPassword,
-        keyboardType: isNumber
-            ? TextInputType.number
-            : TextInputType.text,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         decoration: InputDecoration(
           prefixIcon: Icon(
             icon,
-            color: const Color(
-              0xFF00796B,
-            ),
+            color: const Color(0xFF00796B),
           ),
           labelText: label,
           labelStyle: TextStyle(
