@@ -6,7 +6,7 @@ public class WorkerRequestDTO {
     private String village;
     private String phone;
 
-    // 🚀 NEW FIELDS
+    // Additional worker information fields
     private Integer age;
     private String block;
 
@@ -23,7 +23,7 @@ public class WorkerRequestDTO {
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
 
-    // 🚀 NEW GETTERS AND SETTERS
+    // Getters and setters for additional fields
     public Integer getAge() { return age; }
     public void setAge(Integer age) { this.age = age; }
 

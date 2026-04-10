@@ -30,7 +30,7 @@ public class HealthReportController {
         ));
     }
 
-    // ✅ ENHANCED GET METHOD - Fetch all reports sorted by newest first
+    // Fetch all health reports sorted by creation date
     @GetMapping("/api/reports")
     public ResponseEntity<List<HealthReport>> getAllHealthReports() {
         try {
@@ -48,9 +48,9 @@ public class HealthReportController {
     @PostMapping("/api/reports")
     public ResponseEntity<HealthReport> createHealthReport(@RequestBody HealthReport healthReport) {
         try {
-            // --- 🧠 ENHANCED SMART LOGIC START ---
+            // Smart water safety calculation with victim tracking
 
-            // 1. Calculate Status Automatically (Enhanced with victim check)
+            // Calculate water safety status automatically
             String calculatedStatus = determineWaterSafety(
                     healthReport.getPhLevel(),
                     healthReport.getTdsLevel(),
@@ -70,9 +70,9 @@ public class HealthReportController {
                 }
             }
 
-            // --- ENHANCED SMART LOGIC END ---
+            // End of smart logic processing
 
-            // 4. Save (Cascade will save victims automatically because of the link above)
+            // Save the report (cascade will save victims automatically)
             HealthReport savedReport = healthReportRepository.save(healthReport);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedReport);
 
@@ -82,9 +82,9 @@ public class HealthReportController {
         }
     }
 
-    // ✅ ENHANCED Helper method to determine safety (now includes victim check)
+    // Helper method to determine water safety based on parameters and victims
     private String determineWaterSafety(Double ph, Double tds, Double turbidity, List<Victim> victims) {
-        // Handle nulls gracefully
+        // Handle null values gracefully
         if (ph == null || tds == null || turbidity == null) {
             return "Unknown";
         }

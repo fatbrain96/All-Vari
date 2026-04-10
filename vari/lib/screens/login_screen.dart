@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
             
-            // 🎨 ANIMATED BOTTOM CARD WITH FORM
+            // Main login form container
             Expanded(
               child: FadeInUp(
                 child: Container(
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           const SizedBox(height: 30),
                           
-                          // ASHA ID FIELD
+                          // ASHA ID input field
                           TextFormField(
                             controller: _ashaIdController,
                             validator: _validateField,
@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 20),
                           
-                          // SECURE PIN FIELD
+                          // PIN input field with visibility toggle
                           TextFormField(
                             controller: _pinController,
                             validator: _validateField,
@@ -273,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 40),
                           
-                          // SMART LOGIN BUTTON
+                          // Login button
                           SizedBox(
                             width: double.infinity,
                             height: 55,
@@ -300,7 +300,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 20),
                           
-                          // FOOTER
+                          // App footer
                           const Text(
                             "Powered by Ministry of Health & Vari Tech",
                             style: TextStyle(

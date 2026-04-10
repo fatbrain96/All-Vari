@@ -17,12 +17,12 @@ public class AshaWorkerService {
 
     public AshaWorker provisionNewWorker(String firstName, String lastName, String village, String phone, Integer age, String block) {
         String generatedId = generateUniqueId(firstName, lastName);
-        String plainTextPassword = generateRandomDigits(8); // The OTP
+        String plainTextPassword = generateRandomDigits(8); // Generate temporary PIN
 
         AshaWorker newWorker = new AshaWorker();
         newWorker.setAshaId(generatedId);
 
-        // 🚀 HASH THE PASSWORD BEFORE SAVING
+        // Hash the password before storing in database
         newWorker.setPin(hashPassword(plainTextPassword));
 
         newWorker.setName(firstName + " " + lastName);
@@ -30,10 +30,10 @@ public class AshaWorkerService {
         newWorker.setPhone(phone);
         newWorker.setAge(age);
         newWorker.setBlock(block);
-        newWorker.setFirstLogin(true); // 🚀 SET TO TRUE
+        newWorker.setFirstLogin(true); // Mark as first login
 
-        // We return the PLAIN TEXT password to the Controller just this ONE time
-        // so the Admin can see it on the screen to hand to the worker.
+        // Return the plain text password to admin for one-time display
+        // The database stores the hashed version for security
         AshaWorker savedWorker = repository.save(newWorker);
         savedWorker.setPin(plainTextPassword);
         return savedWorker;
@@ -76,7 +76,7 @@ public class AshaWorkerService {
         return repository.findAll();
     }
 
-    // 🚀 THE SECURE HASHER METHOD
+    // Secure password hashing using SHA-256
     public String hashPassword(String plainText) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

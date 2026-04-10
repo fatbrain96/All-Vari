@@ -41,10 +41,10 @@ public class AshaWorker {
     public String getBlock() { return block; }
     public void setBlock(String block) { this.block = block; }
 
-    // Add this to your AshaWorker.java properties
+    // First login tracking for password change requirement
     private boolean isFirstLogin = true;
 
-    // Generate the Getter and Setter!
+    // Getters and setters for first login flag
     public boolean isFirstLogin() { return isFirstLogin; }
     public void setFirstLogin(boolean firstLogin) { this.isFirstLogin = firstLogin; }
 }
