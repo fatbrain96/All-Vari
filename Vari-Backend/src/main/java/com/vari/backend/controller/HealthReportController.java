@@ -21,15 +21,6 @@ public class HealthReportController {
     @Autowired
     private HealthReportRepository healthReportRepository;
 
-    @GetMapping("/")
-    public ResponseEntity<Map<String, String>> root() {
-        return ResponseEntity.ok(Map.of(
-                "message", "Vari Backend API is running",
-                "version", "1.0.0",
-                "status", "healthy"
-        ));
-    }
-
     // Fetch all health reports sorted by creation date
     @GetMapping("/api/reports")
     public ResponseEntity<List<HealthReport>> getAllHealthReports() {
