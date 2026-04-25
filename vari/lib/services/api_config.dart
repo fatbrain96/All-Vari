@@ -1,18 +1,26 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ApiConfig {
-  // 🛑 CHANGE THIS IP ADDRESS IF YOUR WI-FI/HOTSPOT CHANGES!
+  // Local development IP address
   static const String _mobileIpAddress = '10.0.2.2';
   
+  // Production URL (update this with your Render URL)
+  static const String _productionUrl = 'https://vari-backend.onrender.com/api';
+  
   static String get baseUrl {
+    // Use production URL in release mode, local in debug
+    if (kReleaseMode) {
+      return _productionUrl;
+    }
+    
     if (kIsWeb) {
       return 'http://localhost:8080/api';
     }
     return 'http://$_mobileIpAddress:8080/api';
   }
   
-  // A central place to handle network errors in the future
+  // Central error logging
   static void logError(String endpoint, Object error) {
-    print("🚨 API ERROR at [$endpoint]: $error");
+    print("API ERROR at [$endpoint]: $error");
   }
 }

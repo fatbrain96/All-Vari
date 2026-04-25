@@ -1,0 +1,10 @@
+# Ignore unnecessary files during Docker build
+target/
+.git/
+.gitignore
+README.md
+*.md
+.DS_Store
+.vscode/
+.idea/
+*.iml
