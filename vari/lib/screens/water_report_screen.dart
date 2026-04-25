@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'
-    show
-        kIsWeb;
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_text_field.dart';
 import '../services/api_config.dart';
 
@@ -55,6 +53,12 @@ class _WaterReportScreenState
   void initState() {
     super.initState();
     _getLocation();
+  }
+
+  // Helper method to get ASHA ID from SharedPreferences
+  Future<String> _getAshaId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('ashaId') ?? 'UNKNOWN';
   }
 
   Future<
@@ -456,7 +460,7 @@ class _WaterReportScreenState
         dynamic
       >
       data = {
-        "ashaId": "APP-USER-WEB",
+        "ashaId": await _getAshaId(),
         "location": "GPS Tagged Village",
         "latitude": currentLat,
         "longitude": currentLong,
@@ -507,9 +511,9 @@ class _WaterReportScreenState
           );
         }
       } else {
-        throw Exception(
-          "Server Error: ${response.statusCode}",
-        );
+        // Log the actual error response for debugging
+        print("Error Response: ${response.statusCode} - ${response.body}");
+        throw Exception("Server Error: ${response.statusCode} - ${response.body}");
       }
     } catch (
       e
