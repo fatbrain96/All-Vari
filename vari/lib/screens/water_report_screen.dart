@@ -396,7 +396,7 @@ class _WaterReportScreenState
                             // Compress image before converting to base64
                             String base64Image = "";
                             if (_imageFile != null) {
-                              base64Image = await _compressImage(_imageFile!);
+                              base64Image = await _compressImage(File(_imageFile!.path));
                             }
 
                             // Add to parent list with enhanced medical data + image

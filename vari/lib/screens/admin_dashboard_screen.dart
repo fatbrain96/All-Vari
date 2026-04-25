@@ -614,10 +614,6 @@ class _ProvisionDialogState extends State<_ProvisionDialog> {
               backgroundColor: Colors.green,
             ),
           );
-          
-          // Refresh the workers table and reports
-          _fetchWorkers();
-          _fetchReports(); // This will also update statistics
         }
       } else {
         throw Exception('Failed to register worker');

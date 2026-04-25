@@ -1,9 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
-
 class ApiConfig {
-  // Local development IP address (for mobile debugging only)
-  static const String _mobileIpAddress = '10.0.2.2';
-  
   // Production URL - Your actual Render deployment
   static const String _productionUrl = 'https://vari-backend.onrender.com/api';
   
