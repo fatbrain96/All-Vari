@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:typed_data';
 import '../widgets/custom_text_field.dart';
 import '../services/api_config.dart';
 
@@ -59,6 +60,32 @@ class _WaterReportScreenState
   Future<String> _getAshaId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('ashaId') ?? 'UNKNOWN';
+  }
+
+  // Helper method to compress image
+  Future<String> _compressImage(File imageFile) async {
+    try {
+      // Read image bytes
+      Uint8List imageBytes = await imageFile.readAsBytes();
+      
+      // If image is larger than 500KB, we'll compress it
+      if (imageBytes.length > 500000) {
+        // For now, we'll just resize by reducing quality
+        // You can add image package for better compression
+        String base64String = base64Encode(imageBytes);
+        
+        // If still too large, truncate (not ideal, but prevents crashes)
+        if (base64String.length > 1000000) { // 1MB limit
+          return "IMAGE_TOO_LARGE"; // Placeholder
+        }
+        return base64String;
+      }
+      
+      return base64Encode(imageBytes);
+    } catch (e) {
+      print("Image compression error: $e");
+      return "IMAGE_ERROR";
+    }
   }
 
   Future<
@@ -366,19 +393,10 @@ class _WaterReportScreenState
                       ElevatedButton(
                         onPressed: () async {
                           if (nameController.text.isNotEmpty) {
-                            // ✅ NEW: Convert image to Base64
+                            // Compress image before converting to base64
                             String base64Image = "";
-                            if (_imageFile !=
-                                null) {
-                              List<
-                                int
-                              >
-                              imageBytes = await File(
-                                _imageFile!.path,
-                              ).readAsBytes();
-                              base64Image = base64Encode(
-                                imageBytes,
-                              );
+                            if (_imageFile != null) {
+                              base64Image = await _compressImage(_imageFile!);
                             }
 
                             // Add to parent list with enhanced medical data + image

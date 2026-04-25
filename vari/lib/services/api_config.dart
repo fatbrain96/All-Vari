@@ -8,18 +8,9 @@ class ApiConfig {
   static const String _productionUrl = 'https://vari-backend.onrender.com/api';
   
   static String get baseUrl {
-    // Always use production URL for web (admin dashboard)
-    if (kIsWeb) {
-      return _productionUrl;
-    }
-    
-    // Use production URL in release mode for mobile
-    if (kReleaseMode) {
-      return _productionUrl;
-    }
-    
-    // Only use local IP for mobile debugging
-    return 'http://$_mobileIpAddress:8080/api';
+    // Always use production URL for both web and mobile
+    // This ensures everyone connects to the same database
+    return _productionUrl;
   }
   
   // Central error logging

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 import '../services/api_config.dart';
 import 'mobile_map_screen.dart';
 
@@ -14,11 +15,12 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _selectedIndex = 0;
   bool isLoading = false; // Set to false since we're using mock data
+  Timer? _refreshTimer; // Auto-refresh timer
   
-  // Mock data for dashboard stats
-  int _totalSamples = 24;
-  int _criticalZones = 20;
-  int _activePatients = 27;
+  // Dynamic data for dashboard stats (calculated from real reports)
+  int _totalSamples = 0;
+  int _criticalZones = 0;
+  int _activePatients = 0;
   
   // Real data for Recent Field Reports
   List<dynamic> _recentReports = [];
@@ -33,6 +35,32 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     super.initState();
     _fetchReports();
     _fetchWorkers();
+    
+    // Auto-refresh every 30 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      _fetchReports();
+      _fetchWorkers();
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  // Calculate dashboard statistics from real report data
+  void _calculateStatistics() {
+    setState(() {
+      _totalSamples = _recentReports.length;
+      _criticalZones = _recentReports.where((report) => 
+        report['status']?.toString().toLowerCase() == 'unsafe'
+      ).length;
+      _activePatients = _recentReports.fold(0, (sum, report) {
+        final victims = report['victims'] as List<dynamic>?;
+        return sum + (victims?.length ?? 0);
+      });
+    });
   }
 
   Future<void> _fetchReports() async {
@@ -43,6 +71,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         setState(() {
           _recentReports = data;
         });
+        // Calculate statistics after fetching reports
+        _calculateStatistics();
       }
     } catch (e) {
       ApiConfig.logError('/reports', e);
@@ -585,10 +615,9 @@ class _ProvisionDialogState extends State<_ProvisionDialog> {
             ),
           );
           
-          // Call the callback to refresh the workers table
-          if (widget.onWorkerCreated != null) {
-            widget.onWorkerCreated!();
-          }
+          // Refresh the workers table and reports
+          _fetchWorkers();
+          _fetchReports(); // This will also update statistics
         }
       } else {
         throw Exception('Failed to register worker');
