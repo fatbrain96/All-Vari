@@ -1,26 +1,25 @@
-# Use OpenJDK 17 as the base image
-FROM openjdk:17-jdk-slim
-
-# Install Maven
-RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
+# Use Maven image for building, then OpenJDK for running
+FROM maven:3.8.6-openjdk-17-slim AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy pom.xml first for better caching
+# Copy pom.xml and download dependencies
 COPY pom.xml .
-
-# Download dependencies
 RUN mvn dependency:go-offline -B
 
-# Copy source code
+# Copy source code and build
 COPY src ./src
-
-# Build the application
 RUN mvn clean package -DskipTests
+
+# Use OpenJDK for the runtime
+FROM openjdk:17-jdk-slim
+
+# Copy the built jar from the build stage
+COPY --from=build /app/target/vari-backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose port
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "target/vari-backend-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
