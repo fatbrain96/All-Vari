@@ -1,5 +1,5 @@
 # Use Maven image for building, then OpenJDK for running
-FROM maven:3.8.6-openjdk-17-slim AS build
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 
 # Set working directory
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Use OpenJDK for the runtime
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 
 # Copy the built jar from the build stage
 COPY --from=build /app/target/vari-backend-0.0.1-SNAPSHOT.jar app.jar
