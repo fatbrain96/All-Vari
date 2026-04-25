@@ -4,8 +4,8 @@ class ApiConfig {
   // Local development IP address
   static const String _mobileIpAddress = '10.0.2.2';
   
-  // Production URL (update this with your Render URL)
-  static const String _productionUrl = 'https://vari-backend.onrender.com/api';
+  // Production URL (replace with your actual Render URL)
+  static const String _productionUrl = 'https://your-actual-render-url.onrender.com/api';
   
   static String get baseUrl {
     // Use production URL in release mode, local in debug
