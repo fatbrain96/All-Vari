@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
 
 class ApiConfig {
   // Local development IP address
   static const String _mobileIpAddress = '10.0.2.2';
   
-  // Production URL (replace with your actual Render URL)
-  static const String _productionUrl = 'https://your-actual-render-url.onrender.com/api';
+  // Production URL (replace with your actual Render URL once deployed)
+  static const String _productionUrl = 'https://your-render-url.onrender.com/api';
   
   static String get baseUrl {
     // Use production URL in release mode, local in debug
@@ -21,6 +21,7 @@ class ApiConfig {
   
   // Central error logging
   static void logError(String endpoint, Object error) {
+    // Always log errors for debugging, even in production
     print("API ERROR at [$endpoint]: $error");
   }
 }
