@@ -1,5 +1,5 @@
-# Use Maven for building, then OpenJDK for running
-FROM maven:3.9.4-openjdk-17 AS build
+# Use Maven for building, then Eclipse Temurin for running
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 
 # Set working directory
 WORKDIR /app
@@ -10,8 +10,8 @@ COPY Vari-Backend/ .
 # Build the application
 RUN mvn clean package -DskipTests
 
-# Use OpenJDK for runtime
-FROM openjdk:17-jdk-slim
+# Use Eclipse Temurin JRE for runtime (smaller and faster)
+FROM eclipse-temurin:17-jre-focal
 
 # Copy the built jar
 COPY --from=build /app/target/vari-backend-0.0.1-SNAPSHOT.jar /app.jar
