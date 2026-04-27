@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 import '../services/api_config.dart';
 import 'mobile_map_screen.dart';
 
@@ -139,13 +140,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       if (victim['patientImageUrl'] != null && victim['patientImageUrl'].toString().isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
-                          child: Image.network(
-                            victim['patientImageUrl'],
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Text('Image not available'),
-                          ),
+                          child: _buildPatientImage(victim['patientImageUrl']),
                         ),
                     ],
                   ),
@@ -600,6 +595,47 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildPatientImage(String imagePath) {
+    try {
+      final file = File(imagePath);
+      if (file.existsSync()) {
+        return Image.file(
+          file,
+          height: 150,
+          width: 150,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Container(
+            height: 150,
+            width: 150,
+            color: Colors.grey.shade200,
+            child: const Icon(Icons.image_not_supported),
+          ),
+        );
+      } else {
+        return Container(
+          height: 150,
+          width: 150,
+          color: Colors.grey.shade200,
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.image_not_supported),
+              SizedBox(height: 8),
+              Text('Image not found', style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      return Container(
+        height: 150,
+        width: 150,
+        color: Colors.grey.shade200,
+        child: const Icon(Icons.error),
+      );
+    }
   }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {

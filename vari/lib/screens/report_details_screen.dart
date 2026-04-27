@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:convert'; // For Base64 decoding
+import 'dart:io';
 
 class ReportDetailsScreen
     extends
@@ -187,26 +187,7 @@ class ReportDetailsScreen
                             if (v['patientImageUrl'] !=
                                     null &&
                                 v['patientImageUrl'].toString().isNotEmpty)
-                              Container(
-                                height: 150,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    10,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  ),
-                                  image: DecorationImage(
-                                    image: MemoryImage(
-                                      base64Decode(
-                                        v['patientImageUrl'],
-                                      ),
-                                    ), // ✅ DECODING IMAGE
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
+                              _buildPatientImageWidget(v['patientImageUrl'])
                             else
                               const Text(
                                 "No Image Available",
@@ -280,5 +261,53 @@ class ReportDetailsScreen
         ),
       ],
     );
+  }
+
+  Widget _buildPatientImageWidget(String imagePath) {
+    try {
+      final file = File(imagePath);
+      if (file.existsSync()) {
+        return Container(
+          height: 150,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Image.file(
+            file,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => Container(
+              color: Colors.grey.shade200,
+              child: const Icon(Icons.image_not_supported),
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          height: 150,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey.shade200,
+          ),
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.image_not_supported),
+              SizedBox(height: 8),
+              Text('Image file not found', style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      return Container(
+        height: 150,
+        width: double.infinity,
+        color: Colors.grey.shade200,
+        child: const Icon(Icons.error),
+      );
+    }
   }
 }

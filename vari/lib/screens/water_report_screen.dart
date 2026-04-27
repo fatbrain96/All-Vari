@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../widgets/custom_text_field.dart';
 import '../services/api_config.dart';
+import '../services/image_storage_service.dart';
 
 class WaterReportScreen
     extends
@@ -358,29 +359,21 @@ class _WaterReportScreenState
                       ElevatedButton(
                         onPressed: () async {
                           if (nameController.text.isNotEmpty) {
-                            // ✅ NEW: Convert image to Base64
-                            String base64Image = "";
-                            if (_imageFile !=
-                                null) {
-                              List<
-                                int
-                              >
-                              imageBytes = await File(
-                                _imageFile!.path,
-                              ).readAsBytes();
-                              base64Image = base64Encode(
-                                imageBytes,
+                            // ✅ FIXED: Save image locally instead of base64
+                            String imagePath = "";
+                            if (_imageFile != null) {
+                              final imageStorageService = ImageStorageService();
+                              // Generate a temporary report ID for local storage
+                              final tempReportId = DateTime.now().millisecondsSinceEpoch.toString();
+                              final savedPath = await imageStorageService.saveImage(
+                                File(_imageFile!.path),
+                                tempReportId,
+                                nameController.text,
                               );
-                              
-                              // Limit base64 size to 500KB to avoid server errors
-                              if (base64Image.length > 500000) {
-                                setDialogState(() {
-                                  base64Image = base64Image.substring(0, 500000);
-                                });
-                              }
+                              imagePath = savedPath ?? "";
                             }
 
-                            // Add to parent list with enhanced medical data + image
+                            // Add to parent list with enhanced medical data + local image path
                             setState(
                               () {
                                 _victims.add(
@@ -408,7 +401,7 @@ class _WaterReportScreenState
                                     "priorMedicationName": hasMeds
                                         ? medsNameController.text
                                         : "None",
-                                    "patientImageUrl": base64Image, // ✅ SAVING IMAGE AS BASE64
+                                    "patientImageUrl": imagePath, // ✅ LOCAL FILE PATH
                                     "duration": "${daysController.text} days", // Legacy support
                                   },
                                 );
@@ -749,8 +742,8 @@ class _WaterReportScreenState
                                 (v['patientImageUrl'] !=
                                         null &&
                                     v['patientImageUrl'].toString().isNotEmpty)
-                                ? MemoryImage(
-                                    base64Decode(
+                                ? FileImage(
+                                    File(
                                       v['patientImageUrl'],
                                     ),
                                   )
