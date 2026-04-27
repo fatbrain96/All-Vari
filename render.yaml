@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: vari-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+    healthCheckPath: /health
