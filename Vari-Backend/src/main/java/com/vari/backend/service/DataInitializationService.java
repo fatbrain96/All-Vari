@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Service
 public class DataInitializationService implements CommandLineRunner {
@@ -47,22 +46,22 @@ public class DataInitializationService implements CommandLineRunner {
         // Only initialize if no reports exist
         if (reportRepository.count() == 0) {
             // Create sample reports with victims
-            createSampleReport("SAK744", 23.3441, 85.3096, 6.8, 450.0, "Unsafe", "Ranchi Water Source", 
-                Arrays.asList(
-                    new String[]{"Priya Sharma", "28", "Female", "Diarrhea", "3 days"},
-                    new String[]{"Raj Kumar", "35", "Male", "Stomach Pain", "2 days"}
-                ));
+            java.util.List<String[]> victims1 = java.util.Arrays.asList(
+                new String[]{"Priya Sharma", "28", "Female", "Diarrhea", "3 days"},
+                new String[]{"Raj Kumar", "35", "Male", "Stomach Pain", "2 days"}
+            );
+            createSampleReport("SAK744", 23.3441, 85.3096, 6.8, 450.0, "Unsafe", "Ranchi Water Source", victims1);
                 
-            createSampleReport("RIT146", 19.0760, 72.8777, 7.2, 320.0, "Safe", "Mumbai Water Point", 
-                Arrays.asList());
+            java.util.List<String[]> victims2 = java.util.Arrays.asList();
+            createSampleReport("RIT146", 19.0760, 72.8777, 7.2, 320.0, "Safe", "Mumbai Water Point", victims2);
                 
-            createSampleReport("SON448", 25.2138, 83.0764, 6.5, 520.0, "Unsafe", "Sonbhadra Well", 
-                Arrays.asList(
-                    new String[]{"Sunita Devi", "42", "Female", "Fever", "4 days"}
-                ));
+            java.util.List<String[]> victims3 = java.util.Arrays.asList(
+                new String[]{"Sunita Devi", "42", "Female", "Fever", "4 days"}
+            );
+            createSampleReport("SON448", 25.2138, 83.0764, 6.5, 520.0, "Unsafe", "Sonbhadra Well", victims3);
                 
-            createSampleReport("KAV354", 23.0225, 72.5714, 7.5, 280.0, "Safe", "Ahmedabad Supply", 
-                Arrays.asList());
+            java.util.List<String[]> victims4 = java.util.Arrays.asList();
+            createSampleReport("KAV354", 23.0225, 72.5714, 7.5, 280.0, "Safe", "Ahmedabad Supply", victims4);
                 
             System.out.println("Initialized " + reportRepository.count() + " health reports");
         }
