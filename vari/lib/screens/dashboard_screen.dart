@@ -69,7 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF004D40)
+                  color: Color(0xFF00695C)
                 ),
               ),
             ),
@@ -151,7 +151,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF004D40)
+                color: Color(0xFF00695C)
               ),
             ),
             const SizedBox(height: 15),
@@ -212,6 +212,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Color(0xFF00695C)
               ),
             ),
             const SizedBox(height: 15),

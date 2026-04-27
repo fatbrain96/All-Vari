@@ -168,7 +168,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
-        backgroundColor: const Color(0xFF004D40),
+        backgroundColor: const Color.fromARGB(255, 53, 233, 233),
         foregroundColor: Colors.white,
       ),
       drawer: Drawer(
@@ -257,7 +257,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2C5F5D)
+              color: Color(0xFF00695C)
             )
           ),
           const Text(
@@ -316,7 +316,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF2C5F5D)
+                    color: Color(0xFF00695C)
                   )
                 ),
                 const SizedBox(height: 15),
@@ -429,7 +429,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2C5F5D)
+              color: Color(0xFF00695C)
             )
           ),
           const Text(
@@ -462,7 +462,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2C5F5D)
+                          color: Color(0xFF00695C)
                         )
                       ),
                       const SizedBox(height: 15),
