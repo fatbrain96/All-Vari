@@ -110,11 +110,10 @@ class _WaterReportScreenState
     ) async {
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 600,
-        imageQuality: 80,
+        maxWidth: 400,
+        imageQuality: 60,
       );
-      if (photo !=
-          null) {
+      if (photo != null) {
         updateState(
           () {
             _imageFile = photo;
@@ -375,6 +374,15 @@ class _WaterReportScreenState
                               base64Image = base64Encode(
                                 imageBytes,
                               );
+                              
+                              // Limit base64 size to 500KB to avoid server errors
+                              if (base64Image.length > 500000) {
+                                if (setDialogState != null) {
+                                  setDialogState(() {
+                                    base64Image = base64Image.substring(0, 500000);
+                                  });
+                                }
+                              }
                             }
 
                             // Add to parent list with enhanced medical data + image
@@ -489,27 +497,20 @@ class _WaterReportScreenState
         () => isSubmitting = false,
       );
 
-      if (response.statusCode ==
-          201) {
+      if (response.statusCode == 201) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                "✅ Report & Patients Saved!",
-              ),
+              content: Text("✅ Report & Patients Saved!"),
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.pop(
-            context,
-          );
+          Navigator.pop(context);
         }
       } else {
-        throw Exception(
-          "Server Error: ${response.statusCode}",
-        );
+        print('Error Response: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+        throw Exception("Server Error: ${response.statusCode} - ${response.body}");
       }
     } catch (
       e
