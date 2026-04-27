@@ -103,10 +103,70 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
+  void _showPatientDetails(Map<String, dynamic> report) {
+    final victims = (report['victims'] as List?) ?? [];
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Report #${report['id']} - Patients'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('ASHA ID: ${report['ashaId']}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('Date: ${report['createdAt']?.toString().split('T')[0] ?? 'N/A'}'),
+              const SizedBox(height: 15),
+              if (victims.isEmpty)
+                const Text('No patients recorded', style: TextStyle(color: Colors.grey))
+              else
+                ...victims.map((victim) => Container(
+                  margin: const EdgeInsets.only(bottom: 15),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Name: ${victim['name'] ?? 'N/A'}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Age: ${victim['age'] ?? 'N/A'}'),
+                      Text('Gender: ${victim['gender'] ?? 'N/A'}'),
+                      Text('Disease: ${victim['disease'] ?? 'N/A'}'),
+                      Text('Duration: ${victim['duration'] ?? 'N/A'}'),
+                      if (victim['patientImageUrl'] != null && victim['patientImageUrl'].toString().isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Image.network(
+                            victim['patientImageUrl'],
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => const Text('Image not available'),
+                          ),
+                        ),
+                    ],
+                  ),
+                )).toList(),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
         backgroundColor: const Color(0xFF004D40),
@@ -185,12 +245,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF004D40)
+              color: Colors.white
             )
           ),
           const Text(
             "District-wide Water & Health Surveillance",
-            style: TextStyle(color: Colors.grey, fontSize: 16)
+            style: TextStyle(color: Colors.white70, fontSize: 16)
           ),
           const SizedBox(height: 30),
           // STATS ROW
@@ -244,7 +304,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF004D40)
+                    color: Colors.white
                   )
                 ),
                 const SizedBox(height: 15),
@@ -285,6 +345,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 final date = r['createdAt']?.toString().split('T')[0] ?? 'N/A';
                                 
                                 return DataRow(
+                                  onSelectChanged: (_) => _showPatientDetails(r),
                                   cells: [
                                     DataCell(Text("#${r['id']}")),
                                     DataCell(
@@ -356,12 +417,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF004D40)
+              color: Colors.white
             )
           ),
           const Text(
             "Manage and monitor registered ASHA workers",
-            style: TextStyle(color: Colors.grey, fontSize: 16)
+            style: TextStyle(color: Colors.white70, fontSize: 16)
           ),
           const SizedBox(height: 30),
           Container(
@@ -389,7 +450,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF004D40)
+                          color: Colors.white
                         )
                       ),
                       const SizedBox(height: 15),
