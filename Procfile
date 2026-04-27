@@ -1,0 +1,1 @@
+web: cd Vari-Backend && mvn clean package -DskipTests && java -Dserver.port=$PORT -jar target/vari-backend-0.0.1-SNAPSHOT.jar
