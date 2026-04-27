@@ -17,8 +17,12 @@ public class DataInitializationService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Initialize with your existing workers from Saturday
-        initializeWorkers();
+        try {
+            // Initialize with your existing workers from Saturday
+            initializeWorkers();
+        } catch (Exception e) {
+            System.out.println("Data initialization skipped: " + e.getMessage());
+        }
     }
 
     private void initializeWorkers() {
@@ -42,8 +46,8 @@ public class DataInitializationService implements CommandLineRunner {
         worker.setPhone(phone);
         worker.setAge(age);
         worker.setBlock(block);
-        worker.setPin(workerService.hashPassword(plainPin)); // Hash the PIN
-        worker.setFirstLogin(false); // Set to false since these are existing workers
+        worker.setPin(workerService.hashPassword(plainPin));
+        worker.setFirstLogin(false);
         
         repository.save(worker);
     }
