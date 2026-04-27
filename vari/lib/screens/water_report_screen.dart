@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'
-    show
-        kIsWeb;
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -377,11 +374,9 @@ class _WaterReportScreenState
                               
                               // Limit base64 size to 500KB to avoid server errors
                               if (base64Image.length > 500000) {
-                                if (setDialogState != null) {
-                                  setDialogState(() {
-                                    base64Image = base64Image.substring(0, 500000);
-                                  });
-                                }
+                                setDialogState(() {
+                                  base64Image = base64Image.substring(0, 500000);
+                                });
                               }
                             }
 
@@ -459,6 +454,14 @@ class _WaterReportScreenState
     }
 
     try {
+      // ✅ FIXED: Remove base64 images from victims before sending to backend
+      // Images are stored locally on device, but not sent to server
+      List<Map<String, dynamic>> victimsForBackend = _victims.map((victim) {
+        final victimCopy = Map<String, dynamic>.from(victim);
+        victimCopy.remove('patientImageUrl'); // Remove base64 image data
+        return victimCopy;
+      }).toList();
+
       final Map<
         String,
         dynamic
@@ -480,7 +483,7 @@ class _WaterReportScreenState
             ) ??
             0.0,
         "status": status,
-        "victims": _victims, // ✅ SENDING ENHANCED VICTIMS DATA WITH IMAGES
+        "victims": victimsForBackend, // ✅ SENDING VICTIMS WITHOUT BASE64 IMAGES
       };
 
       final response = await http.post(
