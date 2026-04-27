@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 import '../services/api_config.dart';
 import 'mobile_map_screen.dart';
 
@@ -13,7 +14,7 @@ class AdminDashboardScreen extends StatefulWidget {
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _selectedIndex = 0;
-  bool isLoading = false; // Set to false since we're using mock data
+  bool isLoading = false;
   
   // Dashboard stats - now fetched from backend
   int _totalSamples = 0;
@@ -27,12 +28,26 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   // New state variables for ASHA workers
   List<dynamic> _ashaWorkers = [];
   bool _isLoadingWorkers = true;
+  
+  // Auto-refresh timer
+  late Timer _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _fetchReports();
     _fetchWorkers();
+    
+    // Auto-refresh reports every 10 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      _fetchReports();
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchReports() async {
@@ -256,6 +271,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                               headingRowColor: WidgetStateProperty.all(Colors.grey.shade50),
                               columns: const [
                                 DataColumn(label: Text('ID')),
+                                DataColumn(label: Text('ASHA ID')),
                                 DataColumn(label: Text('Date')),
                                 DataColumn(label: Text('GPS Location')),
                                 DataColumn(label: Text('pH Level')),
@@ -271,6 +287,22 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 return DataRow(
                                   cells: [
                                     DataCell(Text("#${r['id']}")),
+                                    DataCell(
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.shade50,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          r['ashaId'] ?? 'N/A',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue.shade700,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     DataCell(Text(date)),
                                     DataCell(Text("${r['latitude']}, ${r['longitude']}")),
                                     DataCell(Text("${r['phLevel']}")),
