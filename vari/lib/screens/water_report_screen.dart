@@ -119,8 +119,8 @@ class _WaterReportScreenState
     ) async {
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 300, // ✅ Reduced from 400 to 300
-        imageQuality: 40, // ✅ Reduced from 60 to 40 for smaller file size
+        maxWidth: 200, // ✅ Reduced to 200px for very small file size
+        imageQuality: 30, // ✅ Reduced to 30% quality for smaller base64
       );
       if (photo != null) {
         updateState(
@@ -374,14 +374,22 @@ class _WaterReportScreenState
                             String base64Image = "";
                             if (_imageFile != null) {
                               List<int> imageBytes = await File(_imageFile!.path).readAsBytes();
-                              base64Image = base64Encode(imageBytes);
                               
-                              // ✅ Limit base64 size to 100KB to avoid server errors
-                              if (base64Image.length > 100000) {
-                                setDialogState(() {
-                                  base64Image = base64Image.substring(0, 100000);
-                                });
+                              // Check if image is too large (max 30KB raw bytes = ~40KB base64)
+                              if (imageBytes.length > 30000) {
+                                // Show error - image too large
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Image too large. Please retake with lower quality.'),
+                                      backgroundColor: Colors.orange,
+                                    ),
+                                  );
+                                }
+                                return; // Don't add victim
                               }
+                              
+                              base64Image = base64Encode(imageBytes);
                             }
 
                             // Add to parent list with enhanced medical data + base64 image
