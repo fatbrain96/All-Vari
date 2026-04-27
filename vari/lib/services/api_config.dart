@@ -4,18 +4,17 @@ class ApiConfig {
   // Local development IP address (for development only)
   static const String _mobileIpAddress = '10.0.2.2';
   
-  // Production URL - Will be updated after Railway deployment
-  static const String _productionUrl = 'https://your-railway-app.railway.app/api';
+  // Production URL - Your live Render backend
+  static const String _productionUrl = 'https://vari-backend.onrender.com/api';
   
   static String get baseUrl {
-    // For development, use localhost
-    // For production APK, use Railway URL
+    // For web admin panel, always use production
     if (kIsWeb) {
-      return 'http://localhost:8080/api';
+      return _productionUrl;
     }
     
-    // TODO: Change this to true when building production APK
-    bool useProduction = false;
+    // For mobile APK, use production (change this to false for local development)
+    bool useProduction = true;
     
     if (useProduction) {
       return _productionUrl;
