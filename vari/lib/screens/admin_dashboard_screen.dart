@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
 import '../services/api_config.dart';
 import 'mobile_map_screen.dart';
 
@@ -597,22 +596,48 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildPatientImage(String imagePath) {
+  Widget _buildPatientImage(String base64Image) {
     try {
-      final file = File(imagePath);
-      if (file.existsSync()) {
-        return Image.file(
-          file,
-          height: 150,
-          width: 150,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Container(
+      // Check if it's a base64 string
+      if (base64Image.isNotEmpty) {
+        try {
+          // Decode base64 to image bytes
+          final imageBytes = base64Decode(base64Image);
+          return Image.memory(
+            imageBytes,
+            height: 150,
+            width: 150,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => Container(
+              height: 150,
+              width: 150,
+              color: Colors.grey.shade200,
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.image_not_supported),
+                  SizedBox(height: 8),
+                  Text('Invalid image', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+          );
+        } catch (e) {
+          // If base64 decode fails, show error
+          return Container(
             height: 150,
             width: 150,
             color: Colors.grey.shade200,
-            child: const Icon(Icons.image_not_supported),
-          ),
-        );
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.broken_image),
+                SizedBox(height: 8),
+                Text('Corrupted image', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          );
+        }
       } else {
         return Container(
           height: 150,
@@ -623,7 +648,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             children: [
               Icon(Icons.image_not_supported),
               SizedBox(height: 8),
-              Text('Image not found', style: TextStyle(fontSize: 12)),
+              Text('No image', style: TextStyle(fontSize: 12)),
             ],
           ),
         );

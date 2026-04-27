@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_text_field.dart';
 import '../services/api_config.dart';
-import '../services/image_storage_service.dart';
 
 class WaterReportScreen
     extends
@@ -39,6 +39,9 @@ class _WaterReportScreenState
   double? currentLong;
   bool isLocationFound = false;
   bool isSubmitting = false;
+  
+  // ASHA Worker ID
+  String _ashaId = "UNKNOWN";
 
   // 🏥 Victim Data List
   List<
@@ -53,6 +56,14 @@ class _WaterReportScreenState
   void initState() {
     super.initState();
     _getLocation();
+    _loadAshaId();
+  }
+  
+  Future<void> _loadAshaId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _ashaId = prefs.getString('ashaId') ?? 'UNKNOWN';
+    });
   }
 
   Future<
@@ -108,8 +119,8 @@ class _WaterReportScreenState
     ) async {
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 400,
-        imageQuality: 60,
+        maxWidth: 300, // ✅ Reduced from 400 to 300
+        imageQuality: 40, // ✅ Reduced from 60 to 40 for smaller file size
       );
       if (photo != null) {
         updateState(
@@ -359,21 +370,21 @@ class _WaterReportScreenState
                       ElevatedButton(
                         onPressed: () async {
                           if (nameController.text.isNotEmpty) {
-                            // ✅ FIXED: Save image locally instead of base64
-                            String imagePath = "";
+                            // ✅ Convert image to Base64 for database storage
+                            String base64Image = "";
                             if (_imageFile != null) {
-                              final imageStorageService = ImageStorageService();
-                              // Generate a temporary report ID for local storage
-                              final tempReportId = DateTime.now().millisecondsSinceEpoch.toString();
-                              final savedPath = await imageStorageService.saveImage(
-                                File(_imageFile!.path),
-                                tempReportId,
-                                nameController.text,
-                              );
-                              imagePath = savedPath ?? "";
+                              List<int> imageBytes = await File(_imageFile!.path).readAsBytes();
+                              base64Image = base64Encode(imageBytes);
+                              
+                              // ✅ Limit base64 size to 100KB to avoid server errors
+                              if (base64Image.length > 100000) {
+                                setDialogState(() {
+                                  base64Image = base64Image.substring(0, 100000);
+                                });
+                              }
                             }
 
-                            // Add to parent list with enhanced medical data + local image path
+                            // Add to parent list with enhanced medical data + base64 image
                             setState(
                               () {
                                 _victims.add(
@@ -401,7 +412,7 @@ class _WaterReportScreenState
                                     "priorMedicationName": hasMeds
                                         ? medsNameController.text
                                         : "None",
-                                    "patientImageUrl": imagePath, // ✅ LOCAL FILE PATH
+                                    "patientImageUrl": base64Image, // ✅ BASE64 IMAGE FOR DATABASE
                                     "duration": "${daysController.text} days", // Legacy support
                                   },
                                 );
@@ -447,20 +458,12 @@ class _WaterReportScreenState
     }
 
     try {
-      // ✅ FIXED: Remove base64 images from victims before sending to backend
-      // Images are stored locally on device, but not sent to server
-      List<Map<String, dynamic>> victimsForBackend = _victims.map((victim) {
-        final victimCopy = Map<String, dynamic>.from(victim);
-        victimCopy.remove('patientImageUrl'); // Remove base64 image data
-        return victimCopy;
-      }).toList();
-
       final Map<
         String,
         dynamic
       >
       data = {
-        "ashaId": "APP-USER-WEB",
+        "ashaId": _ashaId, // ✅ FIXED: Use actual logged-in ASHA ID
         "location": "GPS Tagged Village",
         "latitude": currentLat,
         "longitude": currentLong,
@@ -476,7 +479,7 @@ class _WaterReportScreenState
             ) ??
             0.0,
         "status": status,
-        "victims": victimsForBackend, // ✅ SENDING VICTIMS WITHOUT BASE64 IMAGES
+        "victims": _victims, // ✅ RESTORED: Sending victims WITH base64 images
       };
 
       final response = await http.post(
