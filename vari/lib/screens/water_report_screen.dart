@@ -458,15 +458,6 @@ class _WaterReportScreenState
     }
 
     try {
-      // ✅ FIXED: Remove base64 images before sending to backend
-      // Backend database column is VARCHAR(255) which is too small for base64 images
-      // Images are stored locally on device only
-      List<Map<String, dynamic>> victimsForBackend = _victims.map((victim) {
-        final victimCopy = Map<String, dynamic>.from(victim);
-        victimCopy.remove('patientImageUrl'); // Remove base64 to avoid 400 error
-        return victimCopy;
-      }).toList();
-
       final Map<
         String,
         dynamic
@@ -488,7 +479,7 @@ class _WaterReportScreenState
             ) ??
             0.0,
         "status": status,
-        "victims": victimsForBackend, // ✅ Send victims WITHOUT images
+        "victims": _victims, // ✅ Send victims WITH base64 images to database
       };
 
       final response = await http.post(

@@ -21,7 +21,10 @@ public class Victim {
     private Double weight;
     private String contactNumber;
     private Integer symptomDays; // "Days till symptoms"
-    private String patientImageUrl; // URL to the image
+    
+    @Column(columnDefinition = "TEXT") // ✅ FIXED: Use TEXT column to store base64 images
+    private String patientImageUrl; // Base64 encoded image
+    
     private Boolean hasPriorMedication;
     private String priorMedicationName;
 

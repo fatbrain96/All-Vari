@@ -136,17 +136,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Text('Gender: ${victim['gender'] ?? 'N/A'}'),
                       Text('Disease: ${victim['disease'] ?? 'N/A'}'),
                       Text('Duration: ${victim['duration'] ?? 'N/A'}'),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text(
-                          '📷 Patient images are stored locally on ASHA worker devices',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
-                          ),
+                      if (victim['patientImageUrl'] != null && victim['patientImageUrl'].toString().isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: _buildPatientImage(victim['patientImageUrl']),
                         ),
-                      ),
                     ],
                   ),
                 )).toList(),
@@ -602,6 +596,88 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
+
+  Widget _buildPatientImage(String base64Image) {
+    try {
+      // Check if it's a base64 string
+      if (base64Image.isNotEmpty) {
+        try {
+          // Decode base64 to image bytes
+          final imageBytes = base64Decode(base64Image);
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.memory(
+              imageBytes,
+              height: 150,
+              width: 150,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.image_not_supported, color: Colors.grey),
+                    SizedBox(height: 8),
+                    Text('Invalid image', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } catch (e) {
+          // If base64 decode fails, show error
+          return Container(
+            height: 150,
+            width: 150,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.broken_image, color: Colors.orange),
+                SizedBox(height: 8),
+                Text('Corrupted image', style: TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
+          );
+        }
+      } else {
+        return Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.image_not_supported, color: Colors.grey),
+              SizedBox(height: 8),
+              Text('No image', style: TextStyle(fontSize: 12, color: Colors.grey)),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      return Container(
+        height: 150,
+        width: 150,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(Icons.error, color: Colors.red),
+      );
+    }
+  }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
     return Container(
