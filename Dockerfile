@@ -19,5 +19,5 @@ COPY --from=build /app/target/vari-backend-0.0.1-SNAPSHOT.jar /app.jar
 # Expose port
 EXPOSE 8080
 
-# Run the application
-CMD ["java", "-Dserver.port=${PORT:-8080}", "-jar", "/app.jar"]
+# Run the application with proper environment variable handling
+CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -Dspring.profiles.active=production -jar /app.jar"]
