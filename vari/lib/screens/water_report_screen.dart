@@ -458,12 +458,21 @@ class _WaterReportScreenState
     }
 
     try {
+      // ✅ FIXED: Remove base64 images before sending to backend
+      // Backend database column is VARCHAR(255) which is too small for base64 images
+      // Images are stored locally on device only
+      List<Map<String, dynamic>> victimsForBackend = _victims.map((victim) {
+        final victimCopy = Map<String, dynamic>.from(victim);
+        victimCopy.remove('patientImageUrl'); // Remove base64 to avoid 400 error
+        return victimCopy;
+      }).toList();
+
       final Map<
         String,
         dynamic
       >
       data = {
-        "ashaId": _ashaId, // ✅ FIXED: Use actual logged-in ASHA ID
+        "ashaId": _ashaId, // ✅ Use actual logged-in ASHA ID
         "location": "GPS Tagged Village",
         "latitude": currentLat,
         "longitude": currentLong,
@@ -479,7 +488,7 @@ class _WaterReportScreenState
             ) ??
             0.0,
         "status": status,
-        "victims": _victims, // ✅ RESTORED: Sending victims WITH base64 images
+        "victims": victimsForBackend, // ✅ Send victims WITHOUT images
       };
 
       final response = await http.post(

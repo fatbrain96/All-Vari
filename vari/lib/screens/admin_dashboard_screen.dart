@@ -136,11 +136,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Text('Gender: ${victim['gender'] ?? 'N/A'}'),
                       Text('Disease: ${victim['disease'] ?? 'N/A'}'),
                       Text('Duration: ${victim['duration'] ?? 'N/A'}'),
-                      if (victim['patientImageUrl'] != null && victim['patientImageUrl'].toString().isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: _buildPatientImage(victim['patientImageUrl']),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          '📷 Patient images are stored locally on ASHA worker devices',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
+                      ),
                     ],
                   ),
                 )).toList(),
@@ -596,72 +602,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildPatientImage(String base64Image) {
-    try {
-      // Check if it's a base64 string
-      if (base64Image.isNotEmpty) {
-        try {
-          // Decode base64 to image bytes
-          final imageBytes = base64Decode(base64Image);
-          return Image.memory(
-            imageBytes,
-            height: 150,
-            width: 150,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              height: 150,
-              width: 150,
-              color: Colors.grey.shade200,
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.image_not_supported),
-                  SizedBox(height: 8),
-                  Text('Invalid image', style: TextStyle(fontSize: 12)),
-                ],
-              ),
-            ),
-          );
-        } catch (e) {
-          // If base64 decode fails, show error
-          return Container(
-            height: 150,
-            width: 150,
-            color: Colors.grey.shade200,
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.broken_image),
-                SizedBox(height: 8),
-                Text('Corrupted image', style: TextStyle(fontSize: 12)),
-              ],
-            ),
-          );
-        }
-      } else {
-        return Container(
-          height: 150,
-          width: 150,
-          color: Colors.grey.shade200,
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.image_not_supported),
-              SizedBox(height: 8),
-              Text('No image', style: TextStyle(fontSize: 12)),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      return Container(
-        height: 150,
-        width: 150,
-        color: Colors.grey.shade200,
-        child: const Icon(Icons.error),
-      );
-    }
-  }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
     return Container(
