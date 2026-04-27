@@ -166,7 +166,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1419),
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
         backgroundColor: const Color(0xFF004D40),
@@ -221,7 +220,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ],
         ),
       ),
-      body: _selectedIndex == 0 ? _buildCommandCenterView() : _buildAshaPersonnelView(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFF5F7FA),
+              Color(0xFFE8F4F8),
+              Color(0xFFE0F2F1),
+            ],
+          ),
+        ),
+        child: _selectedIndex == 0 ? _buildCommandCenterView() : _buildAshaPersonnelView(),
+      ),
       floatingActionButton: _selectedIndex == 1
           ? FloatingActionButton.extended(
               onPressed: _showProvisionDialog,
@@ -245,12 +257,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Color(0xFFE8E8E8)
+              color: Color(0xFF2C5F5D)
             )
           ),
           const Text(
             "District-wide Water & Health Surveillance",
-            style: TextStyle(color: Color(0xFFB0B0B0), fontSize: 16)
+            style: TextStyle(color: Color(0xFF5A8A88), fontSize: 16)
           ),
           const SizedBox(height: 30),
           // STATS ROW
@@ -304,7 +316,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFFE8E8E8)
+                    color: Color(0xFF2C5F5D)
                   )
                 ),
                 const SizedBox(height: 15),
@@ -417,12 +429,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Color(0xFFE8E8E8)
+              color: Color(0xFF2C5F5D)
             )
           ),
           const Text(
             "Manage and monitor registered ASHA workers",
-            style: TextStyle(color: Color(0xFFB0B0B0), fontSize: 16)
+            style: TextStyle(color: Color(0xFF5A8A88), fontSize: 16)
           ),
           const SizedBox(height: 30),
           Container(
@@ -450,7 +462,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFE8E8E8)
+                          color: Color(0xFF2C5F5D)
                         )
                       ),
                       const SizedBox(height: 15),
