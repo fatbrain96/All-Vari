@@ -370,14 +370,28 @@ class _WaterReportScreenState
                       ElevatedButton(
                         onPressed: () async {
                           if (nameController.text.isNotEmpty) {
-                            // ✅ Convert image to Base64 for database storage
+                            // ⚠️ TEMPORARY: Skip images until backend deploys with TEXT column
+                            // Backend currently has VARCHAR(255) limit
+                            String base64Image = "";
+                            
+                            // Show info message
+                            if (_imageFile != null && mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('📷 Image captured! Note: Images will be enabled after backend update.'),
+                                  backgroundColor: Colors.blue,
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                            
+                            /* ENABLE THIS AFTER RENDER DEPLOYS:
                             String base64Image = "";
                             if (_imageFile != null) {
                               List<int> imageBytes = await File(_imageFile!.path).readAsBytes();
                               
                               // Check if image is too large (max 30KB raw bytes = ~40KB base64)
                               if (imageBytes.length > 30000) {
-                                // Show error - image too large
                                 if (mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -386,11 +400,12 @@ class _WaterReportScreenState
                                     ),
                                   );
                                 }
-                                return; // Don't add victim
+                                return;
                               }
                               
                               base64Image = base64Encode(imageBytes);
                             }
+                            */
 
                             // Add to parent list with enhanced medical data + base64 image
                             setState(
