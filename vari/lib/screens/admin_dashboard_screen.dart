@@ -167,7 +167,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         children: [
           const Text(
             "Command Center",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF004D40)
+            )
           ),
           const Text(
             "District-wide Water & Health Surveillance",
@@ -222,7 +226,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               children: [
                 const Text(
                   "Recent Field Reports",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF004D40)
+                  )
                 ),
                 const SizedBox(height: 15),
                 _isLoadingReports
@@ -313,7 +321,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         children: [
           const Text(
             "Active ASHA Personnel",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF004D40)
+            )
           ),
           const Text(
             "Manage and monitor registered ASHA workers",
@@ -342,7 +354,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     children: [
                       Text(
                         "Registered Workers (${_ashaWorkers.length})",
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF004D40)
+                        )
                       ),
                       const SizedBox(height: 15),
                       _ashaWorkers.isEmpty
