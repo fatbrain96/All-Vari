@@ -166,7 +166,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: const Color(0xFF0F1419),
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
         backgroundColor: const Color(0xFF004D40),
@@ -245,12 +245,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Colors.white
+              color: Color(0xFFE8E8E8)
             )
           ),
           const Text(
             "District-wide Water & Health Surveillance",
-            style: TextStyle(color: Colors.white70, fontSize: 16)
+            style: TextStyle(color: Color(0xFFB0B0B0), fontSize: 16)
           ),
           const SizedBox(height: 30),
           // STATS ROW
@@ -304,7 +304,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white
+                    color: Color(0xFFE8E8E8)
                   )
                 ),
                 const SizedBox(height: 15),
@@ -417,12 +417,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Colors.white
+              color: Color(0xFFE8E8E8)
             )
           ),
           const Text(
             "Manage and monitor registered ASHA workers",
-            style: TextStyle(color: Colors.white70, fontSize: 16)
+            style: TextStyle(color: Color(0xFFB0B0B0), fontSize: 16)
           ),
           const SizedBox(height: 30),
           Container(
@@ -450,7 +450,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white
+                          color: Color(0xFFE8E8E8)
                         )
                       ),
                       const SizedBox(height: 15),
