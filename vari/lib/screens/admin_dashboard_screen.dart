@@ -15,10 +15,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _selectedIndex = 0;
   bool isLoading = false; // Set to false since we're using mock data
   
-  // Mock data for dashboard stats
-  int _totalSamples = 24;
-  int _criticalZones = 20;
-  int _activePatients = 27;
+  // Dashboard stats - now fetched from backend
+  int _totalSamples = 0;
+  int _criticalZones = 0;
+  int _activePatients = 0;
   
   // Real data for Recent Field Reports
   List<dynamic> _recentReports = [];
@@ -42,6 +42,18 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
           _recentReports = data;
+          // Update total samples count from actual reports
+          _totalSamples = data.length;
+          
+          // Calculate critical zones (reports with unsafe status)
+          _criticalZones = data.where((r) => r['status'] != 'Safe').length;
+          
+          // Calculate active patients (sum of victims across all reports)
+          _activePatients = 0;
+          for (var report in data) {
+            final victims = (report['victims'] as List?)?.length ?? 0;
+            _activePatients += victims;
+          }
         });
       }
     } catch (e) {
