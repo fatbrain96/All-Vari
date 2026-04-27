@@ -1,29 +1,37 @@
 package com.vari.backend.controller;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class HealthController {
 
-    @GetMapping("/health")
-    public ResponseEntity<Map<String, String>> health() {
-        Map<String, String> status = new HashMap<>();
-        status.put("status", "UP");
-        status.put("service", "Vari Backend");
-        status.put("version", "1.0.0");
-        return ResponseEntity.ok(status);
-    }
+    @Autowired
+    private DataSource dataSource;
 
-    @GetMapping("/")
-    public ResponseEntity<Map<String, String>> root() {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Vari Backend API is running!");
-        response.put("status", "healthy");
-        return ResponseEntity.ok(response);
+    @GetMapping("/health")
+    public Map<String, Object> health() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("service", "Vari Backend");
+        response.put("version", "1.0.0");
+        response.put("status", "UP");
+        
+        // Test database connection
+        try (Connection connection = dataSource.getConnection()) {
+            response.put("database", "Connected");
+            response.put("dbUrl", connection.getMetaData().getURL());
+        } catch (Exception e) {
+            response.put("database", "Failed: " + e.getMessage());
+        }
+        
+        return response;
     }
 }
