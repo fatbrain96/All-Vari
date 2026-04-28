@@ -481,6 +481,14 @@ class _WaterReportScreenState
     }
 
     try {
+      // ✅ CRITICAL FIX: Remove patientImageUrl from victims before sending
+      // Backend hasn't deployed with TEXT column yet, so we must strip images
+      List<Map<String, dynamic>> victimsForBackend = _victims.map((victim) {
+        final victimCopy = Map<String, dynamic>.from(victim);
+        victimCopy.remove('patientImageUrl'); // Remove to prevent 400 error
+        return victimCopy;
+      }).toList();
+
       final Map<
         String,
         dynamic
@@ -502,7 +510,7 @@ class _WaterReportScreenState
             ) ??
             0.0,
         "status": status,
-        "victims": _victims, // ✅ Send victims WITH base64 images to database
+        "victims": victimsForBackend, // ✅ Send victims WITHOUT images
       };
 
       final response = await http.post(
