@@ -16,16 +16,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _selectedIndex = 0;
   bool isLoading = false;
   
-  // Dashboard stats - now fetched from backend
+  // Dashboard statistics from backend
   int _totalSamples = 0;
   int _criticalZones = 0;
   int _activePatients = 0;
   
-  // Real data for Recent Field Reports
+  // Recent field reports data
   List<dynamic> _recentReports = [];
   bool _isLoadingReports = true;
   
-  // New state variables for ASHA workers
+  // ASHA workers list
   List<dynamic> _ashaWorkers = [];
   bool _isLoadingWorkers = true;
   

@@ -25,6 +25,6 @@ class ApiConfig {
   
   // Central error logging
   static void logError(String endpoint, Object error) {
-    print("🚨 API ERROR at [$endpoint]: $error");
+    print("API ERROR at [$endpoint]: $error");
   }
 }

@@ -129,7 +129,7 @@ class ReportDetailsScreen
 
             // 3. Patient List
             const Text(
-              "🏥 Affected Patients",
+              "Affected Patients",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -154,7 +154,7 @@ class ReportDetailsScreen
                     bottom: 10,
                   ),
                   child: ExpansionTile(
-                    // ✅ Changed to ExpansionTile for more details
+                    // Expandable tile for patient details
                     leading: CircleAvatar(
                       backgroundColor: Colors.blue.shade50,
                       child: Text(

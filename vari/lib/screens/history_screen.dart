@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'report_details_screen.dart'; // ✅ Import the details screen
+import 'report_details_screen.dart';
 import '../services/api_config.dart';
 
 class HistoryScreen
@@ -127,7 +127,7 @@ class _HistoryScreenState
                             ? Colors.green.shade50
                             : Colors.red.shade50,
                         child: InkWell(
-                          // ✅ Added InkWell for Tap
+                          // Tap to view details
                           borderRadius: BorderRadius.circular(
                             15,
                           ),
@@ -209,7 +209,7 @@ class _HistoryScreenState
                                       ),
                                     ),
                                     child: Text(
-                                      "🏥 $victimCount Patients Linked (Tap to View)",
+                                      "$victimCount Patients Linked (Tap to View)",
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.orange,

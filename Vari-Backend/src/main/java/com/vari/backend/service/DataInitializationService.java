@@ -28,10 +28,10 @@ public class DataInitializationService implements CommandLineRunner {
     private void initializeWorkers() {
         // Only initialize if database is empty
         if (repository.count() == 0) {
-            createWorker("SAK744", "Sakshi", "Dhoni", "Ranchi", "9876543210", 25, "Ranchi Block", "31331025");
-            createWorker("RIT146", "Ritika", "Sharma", "Mumbai", "9876543211", 28, "Mumbai Block", "88307820");
-            createWorker("SON448", "Sonpari", "Chauhan", "Sonbhadra", "9876543212", 30, "Sonbhadra Block", "51865814");
-            createWorker("KAV354", "Kavya", "Patel", "Ahmedabad", "9876543213", 26, "Ahmedabad Block", "12345678");
+            createWorker("SAK744", "Sakshi", "Dhoni", "Ranchi", "9876543210", 25, "Ranchi Block", "1234");
+            createWorker("RIT146", "Ritika", "Sharma", "Mumbai", "9876543211", 28, "Mumbai Block", "1234");
+            createWorker("SON448", "Sonpari", "Chauhan", "Sonbhadra", "9876543212", 30, "Sonbhadra Block", "1234");
+            createWorker("KAV354", "Kavya", "Patel", "Ahmedabad", "9876543213", 26, "Ahmedabad Block", "1234");
             
             System.out.println("Initialized " + repository.count() + " ASHA workers");
         }

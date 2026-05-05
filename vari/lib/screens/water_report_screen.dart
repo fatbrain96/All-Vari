@@ -43,7 +43,7 @@ class _WaterReportScreenState
   // ASHA Worker ID
   String _ashaId = "UNKNOWN";
 
-  // 🏥 Victim Data List
+  // Patient data list
   List<
     Map<
       String,
@@ -95,7 +95,7 @@ class _WaterReportScreenState
     }
   }
 
-  // 🏥 ENHANCED: Function to Add Victim via Dialog with Medical Details + Image
+  // Function to add patient details with medical info and photo
   void _showAddVictimDialog() {
     final nameController = TextEditingController();
     final ageController = TextEditingController();
@@ -107,7 +107,7 @@ class _WaterReportScreenState
     String selectedCondition = 'Diarrhea';
     bool hasMeds = false;
 
-    // ✅ NEW: Image capture variables
+    // Image capture variables
     XFile? _imageFile;
     final ImagePicker _picker = ImagePicker();
 
@@ -119,8 +119,8 @@ class _WaterReportScreenState
     ) async {
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 200, // ✅ Reduced to 200px for very small file size
-        imageQuality: 30, // ✅ Reduced to 30% quality for smaller base64
+        maxWidth: 200, // Reduced size for faster upload
+        imageQuality: 30, // Lower quality to reduce file size
       );
       if (photo != null) {
         updateState(
@@ -144,13 +144,13 @@ class _WaterReportScreenState
                 ) {
                   return AlertDialog(
                     title: const Text(
-                      "🏥 Patient Details",
+                      "Patient Details",
                     ),
                     content: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // ✅ NEW: Patient Photo Section
+                          // Patient photo section
                           Center(
                             child: GestureDetector(
                               onTap: () => _pickImage(
@@ -370,15 +370,15 @@ class _WaterReportScreenState
                       ElevatedButton(
                         onPressed: () async {
                           if (nameController.text.isNotEmpty) {
-                            // ⚠️ TEMPORARY: Skip images until backend deploys with TEXT column
-                            // Backend currently has VARCHAR(255) limit
+                            // Temporary: Images not sent to backend yet
+                            // Backend database column needs to be updated first
                             String base64Image = "";
                             
                             // Show info message
                             if (_imageFile != null && mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('📷 Image captured! Note: Images will be enabled after backend update.'),
+                                  content: Text('Image captured! Will be enabled after backend update.'),
                                   backgroundColor: Colors.blue,
                                   duration: Duration(seconds: 2),
                                 ),
@@ -435,8 +435,8 @@ class _WaterReportScreenState
                                     "priorMedicationName": hasMeds
                                         ? medsNameController.text
                                         : "None",
-                                    "patientImageUrl": base64Image, // ✅ BASE64 IMAGE FOR DATABASE
-                                    "duration": "${daysController.text} days", // Legacy support
+                                    "patientImageUrl": base64Image, // Image data in base64 format
+                                    "duration": "${daysController.text} days", // For backward compatibility
                                   },
                                 );
                               },
@@ -481,11 +481,11 @@ class _WaterReportScreenState
     }
 
     try {
-      // ✅ CRITICAL FIX: Remove patientImageUrl from victims before sending
-      // Backend hasn't deployed with TEXT column yet, so we must strip images
+      // Remove image data before sending to backend
+      // Backend database column size limitation
       List<Map<String, dynamic>> victimsForBackend = _victims.map((victim) {
         final victimCopy = Map<String, dynamic>.from(victim);
-        victimCopy.remove('patientImageUrl'); // Remove to prevent 400 error
+        victimCopy.remove('patientImageUrl'); // Prevents server error
         return victimCopy;
       }).toList();
 
@@ -494,7 +494,7 @@ class _WaterReportScreenState
         dynamic
       >
       data = {
-        "ashaId": _ashaId, // ✅ Use actual logged-in ASHA ID
+        "ashaId": _ashaId, // Logged-in worker ID
         "location": "GPS Tagged Village",
         "latitude": currentLat,
         "longitude": currentLong,
@@ -510,7 +510,7 @@ class _WaterReportScreenState
             ) ??
             0.0,
         "status": status,
-        "victims": victimsForBackend, // ✅ Send victims WITHOUT images
+        "victims": victimsForBackend, // Patient data without images
       };
 
       final response = await http.post(
@@ -531,7 +531,7 @@ class _WaterReportScreenState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("✅ Report & Patients Saved!"),
+              content: Text("Report & Patients Saved!"),
               backgroundColor: Colors.green,
             ),
           );
