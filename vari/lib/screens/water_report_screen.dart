@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_text_field.dart';
 import '../services/api_config.dart';
@@ -107,30 +105,6 @@ class _WaterReportScreenState
     String selectedCondition = 'Diarrhea';
     bool hasMeds = false;
 
-    // Image capture variables
-    XFile? _imageFile;
-    final ImagePicker _picker = ImagePicker();
-
-    Future<
-      void
-    >
-    _pickImage(
-      StateSetter updateState,
-    ) async {
-      final XFile? photo = await _picker.pickImage(
-        source: ImageSource.camera,
-        maxWidth: 200, // Reduced size for faster upload
-        imageQuality: 30, // Lower quality to reduce file size
-      );
-      if (photo != null) {
-        updateState(
-          () {
-            _imageFile = photo;
-          },
-        );
-      }
-    }
-
     showDialog(
       context: context,
       builder:
@@ -150,52 +124,6 @@ class _WaterReportScreenState
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Patient photo section
-                          Center(
-                            child: GestureDetector(
-                              onTap: () => _pickImage(
-                                setDialogState,
-                              ),
-                              child: CircleAvatar(
-                                radius: 40,
-                                backgroundColor: Colors.teal.shade50,
-                                backgroundImage:
-                                    _imageFile !=
-                                        null
-                                    ? FileImage(
-                                        File(
-                                          _imageFile!.path,
-                                        ),
-                                      )
-                                    : null,
-                                child:
-                                    _imageFile ==
-                                        null
-                                    ? const Icon(
-                                        Icons.camera_alt,
-                                        size: 30,
-                                        color: Colors.teal,
-                                      )
-                                    : null,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          const Center(
-                            child: Text(
-                              "Tap to take photo",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-
                           TextField(
                             controller: nameController,
                             decoration: const InputDecoration(
@@ -370,44 +298,7 @@ class _WaterReportScreenState
                       ElevatedButton(
                         onPressed: () async {
                           if (nameController.text.isNotEmpty) {
-                            // Temporary: Images not sent to backend yet
-                            // Backend database column needs to be updated first
-                            String base64Image = "";
-                            
-                            // Show info message
-                            if (_imageFile != null && mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Image captured! Will be enabled after backend update.'),
-                                  backgroundColor: Colors.blue,
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            }
-                            
-                            /* ENABLE THIS AFTER RENDER DEPLOYS:
-                            String base64Image = "";
-                            if (_imageFile != null) {
-                              List<int> imageBytes = await File(_imageFile!.path).readAsBytes();
-                              
-                              // Check if image is too large (max 30KB raw bytes = ~40KB base64)
-                              if (imageBytes.length > 30000) {
-                                if (mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Image too large. Please retake with lower quality.'),
-                                      backgroundColor: Colors.orange,
-                                    ),
-                                  );
-                                }
-                                return;
-                              }
-                              
-                              base64Image = base64Encode(imageBytes);
-                            }
-                            */
-
-                            // Add to parent list with enhanced medical data + base64 image
+                            // Add patient data to list
                             setState(
                               () {
                                 _victims.add(
@@ -435,8 +326,7 @@ class _WaterReportScreenState
                                     "priorMedicationName": hasMeds
                                         ? medsNameController.text
                                         : "None",
-                                    "patientImageUrl": base64Image, // Image data in base64 format
-                                    "duration": "${daysController.text} days", // For backward compatibility
+                                    "duration": "${daysController.text} days",
                                   },
                                 );
                               },
@@ -768,33 +658,18 @@ class _WaterReportScreenState
                       ),
                       child: Row(
                         children: [
-                          // 1. Patient Image (Left Aligned)
+                          // Patient initial avatar
                           CircleAvatar(
                             radius: 30,
                             backgroundColor: Colors.teal.shade50,
-                            backgroundImage:
-                                (v['patientImageUrl'] !=
-                                        null &&
-                                    v['patientImageUrl'].toString().isNotEmpty)
-                                ? FileImage(
-                                    File(
-                                      v['patientImageUrl'],
-                                    ),
-                                  )
-                                : null,
-                            child:
-                                (v['patientImageUrl'] ==
-                                        null ||
-                                    v['patientImageUrl'].toString().isEmpty)
-                                ? Text(
-                                    v['name'][0].toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.teal.shade800,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                : null,
+                            child: Text(
+                              v['name'][0].toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.teal.shade800,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                           const SizedBox(
                             width: 15,

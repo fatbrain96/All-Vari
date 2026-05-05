@@ -19,7 +19,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   
   String aiInsight = "Waiting for data to analyze...";
   bool isAiLoading = false;
-  final String apiKey = 'AIzaSyAsH15XW6zsyaLMR8b6wj_Qd7qvAst1VBc';
+  // Note: API key should be stored in environment variables for production
+  final String apiKey = 'YOUR_API_KEY_HERE'; // Replace with your key
 
   @override
   void initState() {
@@ -68,7 +69,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       
       final model = GenerativeModel(
         model: 'gemini-2.5-flash', 
-        apiKey: 'AIzaSyAsH15XW6zsyaLMR8b6wj_Qd7qvAst1VBc'
+        apiKey: apiKey // Use the key from variable
       );
       
       final prompt = "You are an expert public health AI assisting a rural ASHA worker in India. Here is the current data for her village: Total water sources tested: $totalReports. Unsafe/Contaminated sources: $unsafeReports. Total patients currently sick: $totalPatients. Give a concise, 2-sentence medical risk assessment and 1 immediate actionable recommendation. Do not use markdown formatting.";
